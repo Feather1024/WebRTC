@@ -14,7 +14,9 @@ const SIGNAL_TYPE_CANDIDATE = "candidate";
 
 // const serverUrl="ws://192.168.241.131:8099"
 // const serverUrl="ws://120.27.201.122:8099"
-const serverUrl = "ws://120.27.201.122:8099"
+// const serverUrl = "ws://127.0.0.1:8099"
+const coturnUrl = "120.27.201.122:3478"
+const serverUrl = "wss://120.27.201.122:8098/ws"
 
 
 var localVideo = document.querySelector('#localVideo');
@@ -126,7 +128,7 @@ ZeroRTCEngine.prototype.onError = function (ev) {
 }
 
 ZeroRTCEngine.prototype.onClose = function (ev) {
-    console.log("onClose -> code: " + ev.code + ", reason: " + EventTarget.reason);
+    console.log("onClose -> code: " + ev.code + ", reason: " + ev.reason);
 }
 
 ZeroRTCEngine.prototype.sendMessage = function (msg) {
@@ -343,20 +345,20 @@ function createPeerConnection(remoteUid) {
     var defaultConfiguration = {
         bundlePolicy: "max-bundle",
         rtcpMuxPolicy: "require",
-        iceTransportPolicy: "all",    //relay只有中继模式，all允许P2P
+        iceTransportPolicy: "relay",    //relay只有中继模式，all允许P2P
         //修改ice数组测试效果，需要进行封装
-        iceServer: [
+        iceServers: [
             {
                 "urls": [
-                    "turn:192.168.241.131:3478?transport=udp",
-                    "turn:192.168.241.131:3478?transport=tcp"
+                    "turn:" + coturnUrl + "?transport=udp",
+                    "turn:" + coturnUrl + "?transport=tcp"
                 ],
-                "username": "root",
+                "username": "demo",
                 "credential": "123456"
             },
             {
                 "urls": [
-                    "stun:192.168.241.131:3478"
+                    "stun:" + coturnUrl + ""
                 ]
             }
         ]
